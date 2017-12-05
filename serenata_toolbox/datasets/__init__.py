@@ -1,9 +1,24 @@
+import csv
 import os
+from collections import OrderedDict
+
+import rows
 
 from serenata_toolbox import log
 from serenata_toolbox.datasets.downloader import Downloader
 from serenata_toolbox.datasets.local import LocalDatasets
 from serenata_toolbox.datasets.remote import RemoteDatasets
+
+
+def read_schema(fobj):
+    'Read and parse a schema description from a CSV file object'
+    # TODO: use rows' functions when available. More details at:
+    #       https://github.com/turicas/rows/issues/263
+
+    field_map = {key.lower().replace('field', ''):
+                 value for key, value in rows.fields.TYPES}
+    return OrderedDict([(row['field_name'], field_map[row['field_type']])
+                        for row in csv.DictReader(fobj)])
 
 
 class Datasets:
